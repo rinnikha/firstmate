@@ -1670,7 +1670,7 @@ case "$HARNESS" in
     # created, so a malformed value stops the spawn instead of launching with
     # it silently dropped or passed through unchecked.
     if [ "$KIND" != secondmate ] && [ -f "$CONFIG/crew-autocompact-pct" ]; then
-      CREW_AUTOCOMPACT_PCT=$(tr -d '[:space:]' < "$CONFIG/crew-autocompact-pct" 2>/dev/null || true)
+      CREW_AUTOCOMPACT_PCT=$(sed -e '/^[[:space:]]*$/d' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' "$CONFIG/crew-autocompact-pct" 2>/dev/null || true)
       case "$CREW_AUTOCOMPACT_PCT" in
         [1-9]|[1-9][0-9]) ;;
         *)

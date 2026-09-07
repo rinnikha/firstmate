@@ -283,6 +283,10 @@ test_non_numeric_is_refused() { assert_refuses "non-numeric" $'abc\n'; }
 test_empty_file_is_refused() { assert_refuses "empty" ''; }
 test_multiline_is_refused() { assert_refuses "multiline" $'60\n70\n'; }
 test_decimal_is_refused() { assert_refuses "decimal" $'60.5\n'; }
+# Interior whitespace must refuse rather than normalize: '6 0' and '6\n0' are not
+# bare integers, and collapsing them would launch with a 60 nobody wrote.
+test_interior_space_is_refused() { assert_refuses "interior space" $'6 0\n'; }
+test_split_digit_lines_are_refused() { assert_refuses "split digit lines" $'6\n0\n'; }
 
 test_absent_file_leaves_launch_unchanged
 test_valid_value_prefixes_claude_crewmate_launch
@@ -296,5 +300,7 @@ test_non_numeric_is_refused
 test_empty_file_is_refused
 test_multiline_is_refused
 test_decimal_is_refused
+test_interior_space_is_refused
+test_split_digit_lines_are_refused
 
 echo "# all fm-crew-autocompact tests passed"
