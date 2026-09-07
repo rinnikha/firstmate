@@ -392,6 +392,7 @@ It affects only claude crewmate and scout launches; a claude secondmate keeps Cl
 Absent means no override: the launch carries no auto-compaction prefix and Claude's own default threshold applies, and firstmate's own primary session is never affected regardless of this file's contents.
 A present value outside 1-99, or one that is not a bare integer, refuses the spawn with an actionable error naming the file and the accepted range rather than launching with the value silently dropped or passed through unvalidated.
 This home's own `config/crew-autocompact-pct` governs its own crewmates and scouts exactly like `config/crew-harness` and `config/crew-dispatch.json`, so it is one of the inherited items declared by [`fm_config_inherit_items`](../bin/fm-config-inherit-lib.sh) and converges into every secondmate home under the propagation contract owned by [`secondmate-provisioning`](../.agents/skills/secondmate-provisioning/SKILL.md), including that contract's re-read pointer to an already-running secondmate when the value changes.
+Regression coverage asserts the emitted launch prefix, the secondmate and non-claude exclusions, and the malformed-value refusal in [`tests/fm-crew-autocompact.test.sh`](../tests/fm-crew-autocompact.test.sh).
 
 ## Crew dispatch profiles (config/crew-dispatch.json)
 

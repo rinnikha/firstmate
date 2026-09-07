@@ -1669,6 +1669,13 @@ case "$HARNESS" in
     # kind=secondmate. Validated here, before any endpoint or worktree is
     # created, so a malformed value stops the spawn instead of launching with
     # it silently dropped or passed through unchecked.
+    # The sed normalization only drops blank lines and trims each line's
+    # surrounding whitespace; it deliberately does NOT use the config-scalar
+    # `tr -d '[:space:]'` idiom (bin/fm-harness.sh resolve_crew), because
+    # deleting interior whitespace would collapse a file holding "6 0" or
+    # "6\n0" into the valid "60" and launch at a threshold the captain never
+    # wrote. Collapsing is harmless for a harness name checked against a known
+    # list; here it would yield a different valid number.
     if [ "$KIND" != secondmate ] && [ -f "$CONFIG/crew-autocompact-pct" ]; then
       CREW_AUTOCOMPACT_PCT=$(sed -e '/^[[:space:]]*$/d' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' "$CONFIG/crew-autocompact-pct" 2>/dev/null || true)
       case "$CREW_AUTOCOMPACT_PCT" in
