@@ -384,6 +384,16 @@ The filter runs at the worker command boundary, after the terminal daemon and pa
 This is not a sandbox: it cannot revoke same-user access to credential files, prevent tools or later shells from loading credentials again, or isolate processes from the same user's other processes.
 Regression coverage executes emitted launch commands with synthetic nonsecret values in [`tests/fm-spawn-dispatch-profile.test.sh`](../tests/fm-spawn-dispatch-profile.test.sh).
 
+## Crew auto-compaction threshold (config/crew-autocompact-pct)
+
+`config/crew-autocompact-pct` is an optional local, gitignored file holding a single bare integer percentage from 1 to 99.
+It sets Claude's real `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` environment variable as a per-launch prefix on `fm-spawn.sh`'s claude launch template, the same pattern the template already uses for `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION`.
+It affects only claude crewmate and scout launches; a claude secondmate keeps Claude's default auto-compaction threshold because a secondmate is a firstmate peer, not an ordinary crewmate, and every non-claude harness ignores the file entirely.
+Absent means no override: the launch carries no auto-compaction prefix and Claude's own default threshold applies, and firstmate's own primary session is never affected regardless of this file's contents.
+A present value outside 1-99, or one that is not a bare integer, refuses the spawn with an actionable error naming the file and the accepted range rather than launching with the value silently dropped or passed through unvalidated.
+This home's own `config/crew-autocompact-pct` governs its own crewmates and scouts exactly like `config/crew-harness` and `config/crew-dispatch.json`, so it is one of the inherited items declared by [`fm_config_inherit_items`](../bin/fm-config-inherit-lib.sh) and converges into every secondmate home under the propagation contract owned by [`secondmate-provisioning`](../.agents/skills/secondmate-provisioning/SKILL.md), including that contract's re-read pointer to an already-running secondmate when the value changes.
+Regression coverage asserts the emitted launch prefix, the secondmate and non-claude exclusions, and the malformed-value refusal in [`tests/fm-crew-autocompact.test.sh`](../tests/fm-crew-autocompact.test.sh).
+
 ## Crew dispatch profiles (config/crew-dispatch.json)
 
 `config/crew-dispatch.json` is an optional local, gitignored file containing natural-language rules that firstmate reads before dispatching a crewmate or scout.
