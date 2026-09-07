@@ -1,0 +1,54 @@
+
+=== A1. captain sets the knob in the PRIMARY home ===
+$ cat config/crew-autocompact-pct
+60
+$ ls secondmate-home/config/
+(secondmate config dir is empty - knob not there yet)
+
+=== A2. $ bin/fm-config-push.sh   (real inherited-local-material push) ===
+config-push: /private/var/folders/h2/62x2f72j1zjdz9y8_wzz5_rr0000gn/T/fm-crew-autocompact-e2e.K1VUDs/world/home -> live secondmate homes
+secondmate sm (/private/var/folders/h2/62x2f72j1zjdz9y8_wzz5_rr0000gn/T/fm-crew-autocompact-e2e.K1VUDs/world/sm):
+  crew-dispatch.json: unchanged
+  crew-harness: unchanged
+  backlog-backend: unchanged
+  backend: unchanged
+  herdr-presentation-spaces: unchanged
+  startup-memory-budget: unchanged
+  trace-context: unchanged - session-scoped
+  launch-env-allowlist: unchanged
+  crew-autocompact-pct: pushed
+  data/captain-shared.md: unchanged
+  config-reread: sent
+(exit=0)
+
+=== A3. the knob landed in the secondmate home ===
+$ cat secondmate-home/config/crew-autocompact-pct
+60
+
+=== A4. the running secondmate got the literal-content reread instruction ===
+These inherited config files changed. Re-read and apply their exact contents at every future intake. They are defaults/rules and do not remove your judgment to choose differently when warranted.
+
+config/crew-autocompact-pct
+-----BEGIN config/crew-autocompact-pct-----
+60
+-----END config/crew-autocompact-pct-----
+
+=== B1. that same secondmate home spawns a claude crewmate ===
+$ bin/fm-spawn.sh e2e-crew1 <project> --mode no-mistakes --yolo off
+warning: /private/var/folders/h2/62x2f72j1zjdz9y8_wzz5_rr0000gn/T/fm-crew-autocompact-e2e.K1VUDs/world/sm/data/e2e-crew1/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode no-mistakes - confirm its definition of done matches
+spawned e2e-crew1 harness=claude kind=ship mode=no-mistakes yolo=off window=firstmate:fm-e2e-crew1 worktree=/private/var/folders/h2/62x2f72j1zjdz9y8_wzz5_rr0000gn/T/fm-crew-autocompact-e2e.K1VUDs/world/wt
+(exit=0)
+
+=== B2. the actual command sent to the crewmate pane ===
+CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=60 env -u CURSOR_AGENT -u CURSOR_INVOKED_AS -u GEMINI_CLI CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION=false CLAUDE_CODE_SEND_FEEDBACK=0
+ claude --dangerously-skip-permissions --settings '{"feedbackDrafts":"off"}' "$('/Users/rinnikha/.no-mistakes/worktrees/eee153ee8fef/01M1WX81ZG6VVM72WEYH5FCJ92/
+bin/fm-operational-input.sh' encode launch-brief < '/private/var/folders/h2/62x2f72j1zjdz9y8_wzz5_rr0000gn/T/fm-crew-autocompact-e2e.K1VUDs/world/sm/data/e2e-cr
+ew1/launch-brief.md')"
+
+=== C. operator typos the value ===
+$ cat config/crew-autocompact-pct
+150
+$ bin/fm-spawn.sh e2e-crew2 <project> --mode no-mistakes --yolo off
+error: config/crew-autocompact-pct holds '150'; it must be a bare integer percentage from 1 to 99
+(exit=1)
+launch commands sent: 0
